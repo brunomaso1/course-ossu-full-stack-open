@@ -1,0 +1,14 @@
+title part0.5-Single_page_app
+
+Browser->Server:GET https://studies.cs.helsinki.fi/exampleapp/spa
+Server-->Browser: RESPONSE 200 - HTML code
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: RESPONSE 200 - main.css
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/spa.js
+Server-->Browser: RESPONSE 200 - spa.js
+note left of Browser
+Browser start 
+processing spa.js
+end note
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: RESPONSE 200 - data.json

@@ -1,0 +1,4 @@
+title part0.6-New_note
+
+Browser->Server:POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+Server-->Browser: RESPONSE 201 - note created

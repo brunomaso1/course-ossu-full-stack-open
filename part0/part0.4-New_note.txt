@@ -1,0 +1,16 @@
+title part0.4-New_note
+
+Browser->Server:POST https://studies.cs.helsinki.fi/exampleapp/new_note
+Server-->Browser: RESPONSE 302 - Redirect to: /exampleapp/notes
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+Server-->Browser: RESPONSE 200 - HTML code
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+Server-->Browser: RESPONSE 200 - main.css
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+Server-->Browser: RESPONSE 200 - main.js
+note left of Browser
+Browser start 
+processing main.js
+end note
+Browser->Server: GET https://studies.cs.helsinki.fi/exampleapp/data.json
+Server-->Browser: RESPONSE 200 - data.json
