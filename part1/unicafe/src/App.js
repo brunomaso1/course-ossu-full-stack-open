@@ -14,6 +14,7 @@ const Button = ({ text, handleClick }) => {
   )
 }
 
+// Already done 1.8
 const Statistics = ({good, neutral, bad}) => {
   return (
     <>
