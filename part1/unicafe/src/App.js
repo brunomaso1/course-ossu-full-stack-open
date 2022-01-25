@@ -21,26 +21,33 @@ const Statistics = ({ feedBacks, hasFeedback }) => {
     )
   else
     return (
-      <div>
-        <StatisticLine text="good" value={feedBacks.good}></StatisticLine>
-        <StatisticLine text="neutral" value={feedBacks.neutral}></StatisticLine>
-        <StatisticLine text="bad" value={feedBacks.bad}></StatisticLine>
-        <StatisticLine text="all" value={feedBacks.good + feedBacks.neutral + feedBacks.bad}></StatisticLine>
-        <StatisticLine text="average" value={(feedBacks.good + feedBacks.bad * -1) / (feedBacks.good + feedBacks.neutral + feedBacks.bad)}></StatisticLine>
-        <StatisticLine text="positive" value={feedBacks.good / (feedBacks.good + feedBacks.neutral + feedBacks.bad) * 100}></StatisticLine>
-      </div>
+      <table>
+        <tbody>
+          <StatisticLine text="good" value={feedBacks.good}></StatisticLine>
+          <StatisticLine text="neutral" value={feedBacks.neutral}></StatisticLine>
+          <StatisticLine text="bad" value={feedBacks.bad}></StatisticLine>
+          <StatisticLine text="all" value={feedBacks.good + feedBacks.neutral + feedBacks.bad}></StatisticLine>
+          <StatisticLine text="average" value={(feedBacks.good + feedBacks.bad * -1) / (feedBacks.good + feedBacks.neutral + feedBacks.bad)}></StatisticLine>
+          <StatisticLine text="positive" value={feedBacks.good / (feedBacks.good + feedBacks.neutral + feedBacks.bad) * 100}></StatisticLine>
+        </tbody>
+      </table>
     )
-
 }
 
 const StatisticLine = ({ text, value }) => {
   if (text === 'positive')
     return (
-      <p>{text} {value} %</p>
+      <tr>
+        <td>{text}</td>
+        <td>{value} %</td>
+      </tr>
     )
   else
     return (
-      <p>{text} {value}</p>
+      <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+      </tr>
     )
 }
 
