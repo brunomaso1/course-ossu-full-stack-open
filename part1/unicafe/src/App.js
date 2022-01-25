@@ -14,34 +14,49 @@ const Button = ({ text, handleClick }) => {
   )
 }
 
-// Already done 1.8
-const Statistics = ({good, neutral, bad}) => {
-  return (
-    <>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {good + neutral + bad}</p>
-      <p>average {(good + bad * -1)/(good + neutral + bad)}</p>
-      <p>positive {good/(good + neutral + bad)*100} %</p>
-    </>
-  )
+const Statistics = ({ feedBacks, hasFeedback }) => {
+  if (!hasFeedback)
+    return (
+      <p>No feedback given</p>
+    )
+  else
+    return (
+      <>
+        <p>good {feedBacks.good}</p>
+        <p>neutral {feedBacks.neutral}</p>
+        <p>bad {feedBacks.bad}</p>
+        <p>all {feedBacks.good + feedBacks.neutral + feedBacks.bad}</p>
+        <p>average {(feedBacks.good + feedBacks.bad * -1) / (feedBacks.good + feedBacks.neutral + feedBacks.bad)}</p>
+        <p>positive {feedBacks.good / (feedBacks.good + feedBacks.neutral + feedBacks.bad) * 100} %</p>
+      </>
+    )
+
 }
 
 const App = () => {
   // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const [hasFeedback, setHasFeedback] = useState(false);
 
   const setFeedback = ({ value }) => {
     switch (value) {
       case 'good':
-        return () => setGood(good + 1);
+        return () => {
+          setHasFeedback(true);
+          setGood(good + 1);
+        };
       case 'neutral':
-        return () => setNeutral(neutral + 1);
+        return () => {
+          setHasFeedback(true);
+          setNeutral(neutral + 1);
+        }
       case 'bad':
-        return () => setBad(bad + 1)
+        return () => {
+          setHasFeedback(true);
+          setBad(bad + 1);
+        }
       default:
         console.error('Wrrong function');
         break;
@@ -55,7 +70,7 @@ const App = () => {
       <Button text='neutral' handleClick={setFeedback({ value: 'neutral' })}></Button>
       <Button text='bad' handleClick={setFeedback({ value: 'bad' })}></Button>
       <Title text='Statistics'></Title>
-      <Statistics good={good} neutral={neutral} bad={bad} ></Statistics>
+      <Statistics feedBacks={{good, neutral, bad}} hasFeedback={hasFeedback} ></Statistics>
     </div>
   )
 }
