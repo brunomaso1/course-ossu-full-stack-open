@@ -15,7 +15,7 @@ const App = () => {
   const [points, setPoints] = useState(new Uint8Array(anecdotes.length))
 
   function generateRandomAnecdote() {
-    // Generates a random integer between 0 and (anecdotes.length - 1)-
+    // Generates a random integer between 0 and (anecdotes.length - 1).
     let randomPosition = Math.floor(Math.random() * anecdotes.length);
     setSelected(randomPosition);
   }
@@ -23,15 +23,22 @@ const App = () => {
   function vote() {
     const newPoints = [...points];
     newPoints[selected] += 1;
-    setPoints(newPoints)
+    setPoints(newPoints);
+    console.log();
   }
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {points[selected]} votes</p>
       <button onClick={vote}>vote</button>
       <button onClick={generateRandomAnecdote}>next anecdote</button>
+
+      <h1>Anecdote with most votes</h1>
+      {/* https://stackoverflow.com/questions/11301438/return-index-of-greatest-value-in-an-array */}
+      <p>{anecdotes[points.indexOf(Math.max(...points))]}</p>
+      <p>has {points[points.indexOf(Math.max(...points))]} votes</p>
     </div>
   )
 }
