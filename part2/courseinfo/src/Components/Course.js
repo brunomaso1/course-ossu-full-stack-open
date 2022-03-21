@@ -6,14 +6,19 @@ const Course = ({ course }) => {
         <div>
             <Header course={course.name} />
             <Content parts={course.parts} />
-            <Total sum={course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises + course.parts[3].exercises} />
+            <Total parts={course.parts} />
         </div>
     )
 }
 
 const Header = ({ course }) => <h1>{course}</h1>
 
-const Total = ({ sum }) => <p><b>total of {sum} exercises</b></p>
+const Total = ({ parts }) => {
+    return <p><b>total of {
+        parts.reduce((prev, current) => prev + current.exercises, 0)
+    } exercises</b></p>
+}
+
 
 const Part = ({ part }) =>
     <p>
