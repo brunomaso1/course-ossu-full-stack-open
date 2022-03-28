@@ -1,5 +1,6 @@
 import React from "react";
 
+// Allready done.
 const Course = ({ course }) => {
 
     return (
