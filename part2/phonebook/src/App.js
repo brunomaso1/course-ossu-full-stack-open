@@ -7,8 +7,12 @@ function App() {
 
   function addNewPerson(event) {
     event.preventDefault();
-    setPersons(persons.concat({ name: newName }));
-    setNewName('');
+    if (persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())) {
+      alert(`${newName} is already added to the phonebook`);
+    } else {
+      setPersons(persons.concat({ name: newName }));
+      setNewName('');
+    }
   }
 
   function handleNewNameChange(event) {
