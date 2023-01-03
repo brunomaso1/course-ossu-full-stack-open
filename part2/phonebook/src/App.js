@@ -19,8 +19,7 @@ function App() {
     <div>
       <h2>Phonebook</h2>
       <form onSubmit={addNewPerson} >
-        <div>name: <input value={newName}
-          onChange={handleNewNameChange} /></div>
+        <div>name: <input onChange={handleNewNameChange} value={newName} /></div>
         <div>
           <button type="submit">add</button>
         </div>
