@@ -1,4 +1,7 @@
 import { useState, React } from "react";
+import { Filter } from "./components/Filter";
+import { PersonForm } from "./components/PersonForm";
+import { Persons } from "./components/Persons";
 
 function App() {
   const [persons, setPersons] = useState([
@@ -12,49 +15,18 @@ function App() {
   const [newNumber, setNewNumber] = useState('');
   const [serachTerm, setSearchTerm] = useState('');
 
-  function addNewPerson(event) {
-    event.preventDefault();
-    if (persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())) {
-      alert(`${newName} is already added to the phonebook`);
-    } else {
-      setPersons(persons.concat({
-        name: newName,
-        number: newNumber,
-        id: persons.length + 1
-      }));
-      setNewNumber('');
-      setNewName('');
-    }
-  }
-
-  function handleNewNameChange(event) {
-    setNewName(event.target.value);
-  }
-
-  function handleNewNumberChange(event) {
-    setNewNumber(event.target.value);
-  }
-
-  function handleSearchTermChange(event) {
-    setSearchTerm(event.target.value);
-  }
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with: <input onChange={handleSearchTermChange} value={serachTerm}></input></div>
-      <h2>add a new</h2>
-      <form onSubmit={addNewPerson} >
-        <div>name: <input onChange={handleNewNameChange} value={newName} /></div>
-        <div>number: <input onChange={handleNewNumberChange} value={newNumber} /></div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {persons
-        .filter((person) => person.name.toLowerCase().includes(serachTerm.toLowerCase().trim()))
-        .map((person) => <p key={person.id}>{person.name} {person.number}</p>)}
+      <Filter setSearchTerm={setSearchTerm} serachTerm={serachTerm}></Filter>
+      <h3>Add a new</h3>
+      <PersonForm
+        persons={persons} setPersons={setPersons}
+        newName={newName} setNewName={setNewName}
+        newNumber={newNumber} setNewNumber={setNewNumber}
+      ></PersonForm>
+      <h3>Numbers</h3>
+      <Persons persons={persons} serachTerm={serachTerm}></Persons>
     </div>
   );
 }
