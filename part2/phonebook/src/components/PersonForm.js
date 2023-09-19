@@ -1,5 +1,5 @@
 import { React } from "react";
-import axios from 'axios';
+import personsService from "../services/persons";
 
 export function PersonForm({ persons, setPersons, newName, setNewName, newNumber, setNewNumber }) {
 
@@ -14,11 +14,9 @@ export function PersonForm({ persons, setPersons, newName, setNewName, newNumber
                 id: persons.length + 1
             }
 
-            const url = 'http://localhost:3001/persons'
-
-            axios.post(url, newPerson)
-                .then((response) => {
-                    setPersons(persons.concat(response.data));
+            personsService.create(newPerson)
+                .then((personResponse) => {
+                    setPersons(persons.concat(personResponse));
                 })
                 .catch((response) => {
                     alert(`Person ${newPerson.name} can not be saved`)

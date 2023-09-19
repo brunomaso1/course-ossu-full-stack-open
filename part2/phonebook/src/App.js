@@ -1,5 +1,5 @@
 import { useState, React, useEffect } from "react";
-import axios from "axios";
+import personsService from "./services/persons";
 
 import { Filter } from "./components/Filter";
 import { PersonForm } from "./components/PersonForm";
@@ -13,8 +13,8 @@ function App() {
   const [serachTerm, setSearchTerm] = useState('');
 
   const hook = () => {
-    axios.get('http://localhost:3001/persons').then(response =>
-      setPersons(response.data))
+    personsService.getAll().then(personsResponse =>
+      setPersons(personsResponse))
   }
 
   useEffect(hook, [])
