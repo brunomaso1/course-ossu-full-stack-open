@@ -30,7 +30,9 @@ function App() {
         newNumber={newNumber} setNewNumber={setNewNumber}
       ></PersonForm>
       <h3>Numbers</h3>
-      <Persons persons={persons} serachTerm={serachTerm}></Persons>
+      <Persons
+        persons={persons} setPersons={setPersons}
+        serachTerm={serachTerm}></Persons>
     </div>
   );
 }

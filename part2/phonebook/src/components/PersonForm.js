@@ -10,8 +10,7 @@ export function PersonForm({ persons, setPersons, newName, setNewName, newNumber
         } else {
             const newPerson = {
                 name: newName,
-                number: newNumber,
-                id: persons.length + 1
+                number: newNumber
             }
 
             personsService.create(newPerson)
