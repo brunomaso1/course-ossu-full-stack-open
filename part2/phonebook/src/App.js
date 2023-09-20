@@ -5,6 +5,7 @@ import { Filter } from "./components/Filter";
 import { PersonForm } from "./components/PersonForm";
 import { Persons } from "./components/Persons";
 import { Notification } from "./components/Notification";
+import { ErrorMessage } from "./components/ErrorMessage";
 
 function App() {
   const [persons, setPersons] = useState([]);
@@ -12,7 +13,8 @@ function App() {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [serachTerm, setSearchTerm] = useState('');
-  const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   const hook = () => {
     personsService.getAll().then(personsResponse =>
@@ -25,6 +27,7 @@ function App() {
     <div>
       <h2>Phonebook</h2>
       <Notification message={notification} />
+      <ErrorMessage message={errorMessage} />
       <Filter setSearchTerm={setSearchTerm} serachTerm={serachTerm}></Filter>
       <h3>Add a new</h3>
       <PersonForm
@@ -36,7 +39,9 @@ function App() {
       <h3>Numbers</h3>
       <Persons
         persons={persons} setPersons={setPersons}
-        serachTerm={serachTerm}></Persons>
+        serachTerm={serachTerm}
+        setErrorMessage={setErrorMessage}>
+      </Persons>
     </div>
   );
 }
