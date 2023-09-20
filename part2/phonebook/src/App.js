@@ -4,6 +4,7 @@ import personsService from "./services/persons";
 import { Filter } from "./components/Filter";
 import { PersonForm } from "./components/PersonForm";
 import { Persons } from "./components/Persons";
+import { Notification } from "./components/Notification";
 
 function App() {
   const [persons, setPersons] = useState([]);
@@ -11,6 +12,7 @@ function App() {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [serachTerm, setSearchTerm] = useState('');
+  const [notification, setNotification] = useState('')
 
   const hook = () => {
     personsService.getAll().then(personsResponse =>
@@ -22,12 +24,14 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification} />
       <Filter setSearchTerm={setSearchTerm} serachTerm={serachTerm}></Filter>
       <h3>Add a new</h3>
       <PersonForm
         persons={persons} setPersons={setPersons}
         newName={newName} setNewName={setNewName}
         newNumber={newNumber} setNewNumber={setNewNumber}
+        setNotification={setNotification}
       ></PersonForm>
       <h3>Numbers</h3>
       <Persons

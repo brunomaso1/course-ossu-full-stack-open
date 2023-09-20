@@ -2,7 +2,7 @@
 import { React } from "react";
 import personsService from "../services/persons";
 
-export function PersonForm({ persons, setPersons, newName, setNewName, newNumber, setNewNumber }) {
+export function PersonForm({ persons, setPersons, newName, setNewName, newNumber, setNewNumber, setNotification }) {
 
     function addNewPerson(event) {
         event.preventDefault();
@@ -13,7 +13,11 @@ export function PersonForm({ persons, setPersons, newName, setNewName, newNumber
                     .then(() => {
                         setPersons(persons.map(person =>
                             person.id === updatePerson.id ? { ...updatePerson, number: newNumber } : { ...person }
-                        ))
+                        ));
+                        setNotification(`Updated ${updatePerson.name}`);
+                        setTimeout(() => {
+                            setNotification(null);
+                        }, 5000);
                     })
             }
         } else {
@@ -25,6 +29,10 @@ export function PersonForm({ persons, setPersons, newName, setNewName, newNumber
             personsService.create(newPerson)
                 .then((personResponse) => {
                     setPersons(persons.concat(personResponse));
+                    setNotification(`Added ${newPerson.name}`);
+                    setTimeout(() => {
+                        setNotification(null);
+                    }, 5000);
                 })
                 .catch((response) => {
                     alert(`Person ${newPerson.name} can not be saved`)
