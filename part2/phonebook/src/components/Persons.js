@@ -10,7 +10,6 @@ export function Persons({ persons, setPersons, serachTerm }) {
             personsService.eliminate(personToDelete.id)
                 .then(() => {
                     setPersons(persons.filter((person) => person.id !== personToDelete.id))
-                    alert(`${personToDelete.name} deleted successfully`)
                 })
                 .catch((response) => {
                     alert(`Sorry, could not delete ${personToDelete.name}`)

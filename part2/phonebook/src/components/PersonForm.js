@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import { React } from "react";
 import personsService from "../services/persons";
 
@@ -5,8 +6,16 @@ export function PersonForm({ persons, setPersons, newName, setNewName, newNumber
 
     function addNewPerson(event) {
         event.preventDefault();
-        if (persons.some((person) => person.name.toLowerCase() === newName.toLowerCase())) {
-            alert(`${newName} is already added to the phonebook`);
+        const updatePerson = persons.find((person) => person.name.toLowerCase() === newName.toLowerCase())
+        if (updatePerson !== undefined) {
+            if (confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+                personsService.update({ ...updatePerson, number: newNumber })
+                    .then(() => {
+                        setPersons(persons.map(person =>
+                            person.id === updatePerson.id ? { ...updatePerson, number: newNumber } : { ...person }
+                        ))
+                    })
+            }
         } else {
             const newPerson = {
                 name: newName,
