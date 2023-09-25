@@ -1,3 +1,5 @@
+import { Weather } from "./Weather";
+
 /* eslint-disable react/prop-types */
 export function Country({ country }) {
     if (!country)
@@ -17,6 +19,7 @@ export function Country({ country }) {
                 }
             </ul>
         <img src={country.flags.png} alt=''/>
+        <Weather country={country}></Weather>
         </>
         // <pre>{JSON.stringify(country)}</pre>
     )
