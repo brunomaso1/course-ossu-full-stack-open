@@ -38,11 +38,15 @@ function App() {
     }
   }, [countryName])
 
+  function handleShowButton(countryName) {
+    setCountryName(countryName)
+  }
+
   return (
     <>
       <FindCountry setCountryName={setCountryName}></FindCountry>
       {showInfMessage ? <p>Too many matches, specify another filter</p> : null}
-      <CountryList countryList={countryList}></CountryList>
+      <CountryList countryList={countryList} handleShowButton={handleShowButton}></CountryList>
       <Country country={country}></Country>
     </>
   )
