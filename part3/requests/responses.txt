@@ -1,0 +1,19 @@
+Request:
+DELETE http://localhost:3001/api/persons/1
+
+Response:
+HTTP/1.1 204 No Content
+X-Powered-By: Express
+Date: Mon, 02 Oct 2023 22:48:26 GMT
+Connection: close
+
+###
+Request:
+DELETE http://localhost:3001/api/persons/100
+
+Response:
+HTTP/1.1 404 Not Found
+X-Powered-By: Express
+Date: Mon, 02 Oct 2023 22:49:36 GMT
+Connection: close
+Content-Length: 0
