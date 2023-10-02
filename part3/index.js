@@ -42,7 +42,21 @@ app.route('/api/persons')
         return response.json(persons);
     })
     .post((request, response) => {
-        const newPerson = {id: Math.round(Math.random()*100000000), ...request.body};
+        const body = request.body;
+
+        if (!body) return response.status(400).json({ error: 'content missing' });
+        if (!body.name) return response.status(400).json({ error: 'name missing' });
+        if (!body.number) return response.status(400).json({ error: 'number missing' });
+
+        if (persons.some(person => person.name.toLocaleLowerCase() === body.name.toLocaleLowerCase()))
+            return response.status(400).json({ error: 'name must be unique' });
+
+        const newPerson = {
+            id: Math.round(Math.random() * 100000000),
+            name: body.name,
+            number: body.number
+        }
+
         persons = persons.concat(newPerson);
         return response.status(201).json(newPerson);
     })
