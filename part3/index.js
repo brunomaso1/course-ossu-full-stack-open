@@ -30,8 +30,15 @@ app.get('/', (request, response) => {
     return response.send('<h1>Server is up</h1>');
 })
 
+app.get('/info', (request, response) => {
+    let htmlResp = `<p>Phonebook has info for ${persons.length} people</p>`;
+    htmlResp += `<p>${Date().toLocaleString()}</p>`
+    
+    return response.send(htmlResp);
+})
+
 app.get('/api/persons', (request, response) => {
-  return response.json(persons);
+    return response.json(persons);
 })
 
 const PORT = 3001;
