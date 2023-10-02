@@ -33,12 +33,20 @@ app.get('/', (request, response) => {
 app.get('/info', (request, response) => {
     let htmlResp = `<p>Phonebook has info for ${persons.length} people</p>`;
     htmlResp += `<p>${Date().toLocaleString()}</p>`
-    
+
     return response.send(htmlResp);
 })
 
 app.get('/api/persons', (request, response) => {
     return response.json(persons);
+})
+
+app.get('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id);
+
+    const person = persons.find(person => person.id === id)
+
+    return person ? response.json(person) : response.status(404).send();
 })
 
 const PORT = 3001;
