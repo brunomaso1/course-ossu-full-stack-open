@@ -37,9 +37,15 @@ app.get('/info', (request, response) => {
     return response.send(htmlResp);
 })
 
-app.get('/api/persons', (request, response) => {
-    return response.json(persons);
-})
+app.route('/api/persons')
+    .get((request, response) => {
+        return response.json(persons);
+    })
+    .post((request, response) => {
+        const newPerson = {id: Math.round(Math.random()*100000000), ...request.body};
+        persons = persons.concat(newPerson);
+        return response.status(201).json(newPerson);
+    })
 
 app.route('/api/persons/:id')
     .get((request, response) => {
