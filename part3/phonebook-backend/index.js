@@ -7,12 +7,15 @@ const Person = require('./models/person')
 
 morgan.token('body', req => JSON.stringify(req.body))
 
+
 app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let persons = []
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
 
 app.get('/info', (request, response) => {
     let htmlResp = `<p>Phonebook has info for ${persons.length} people</p>`;
@@ -32,17 +35,15 @@ app.route('/api/persons')
         if (!body.name) return response.status(400).json({ error: 'name missing' });
         if (!body.number) return response.status(400).json({ error: 'number missing' });
 
-        if (persons.some(person => person.name.toLocaleLowerCase() === body.name.toLocaleLowerCase()))
-            return response.status(400).json({ error: 'name must be unique' });
+        // if (persons.some(person => person.name.toLocaleLowerCase() === body.name.toLocaleLowerCase()))
+        //     return response.status(400).json({ error: 'name must be unique' });
 
-        const newPerson = {
-            id: Math.round(Math.random() * 100000000),
+        const newPerson = new Person({
             name: body.name,
             number: body.number
-        }
+        })
 
-        persons = persons.concat(newPerson);
-        return response.status(201).json(newPerson);
+        newPerson.save().then(() => response.status(201).json(newPerson))
     })
 
 app.route('/api/persons/:id')
@@ -64,6 +65,8 @@ app.route('/api/persons/:id')
             return response.status(404).end()
         }
     })
+
+app.use(unknownEndpoint)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
