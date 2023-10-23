@@ -7,15 +7,23 @@ const Person = require('./models/person')
 
 morgan.token('body', req => JSON.stringify(req.body))
 
+const errorHandler = (error, request, response, next) => {
+    console.log(error.message);
+
+    if (error.name === 'CastError')
+        return response.status(400).send({ error: 'malformatted id' })
+
+    next(error)
+}
+
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
 
 app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
-
-const unknownEndpoint = (request, response) => {
-    response.status(404).send({ error: 'unknown endpoint' })
-}
 
 app.get('/info', (request, response) => {
     let htmlResp = `<p>Phonebook has info for ${persons.length} people</p>`;
@@ -25,8 +33,10 @@ app.get('/info', (request, response) => {
 })
 
 app.route('/api/persons')
-    .get((request, response) => {
-        Person.find({}).then(persons => response.json(persons))
+    .get((request, response, next) => {
+        Person.find({})
+            .then(persons => response.json(persons))
+            .catch(error => next(error))
     })
     .post((request, response) => {
         const body = request.body;
@@ -54,16 +64,19 @@ app.route('/api/persons/:id')
 
         return person ? response.json(person) : response.status(404).send();
     })
-    .delete((request, response) => {
+    .delete((request, response, next) => {
         const id = request.params.id;
 
-        Person.findByIdAndRemove(id).then(result => {
-            console.log(result);
-            return result ? response.status(204).end() : response.status(404).end()
-        })
+        Person.findByIdAndRemove(id)
+            .then(result => {
+                console.log(result);
+                return result ? response.status(204).end() : response.status(404).end()
+            })
+            .catch(error => next(error))
     })
 
 app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
