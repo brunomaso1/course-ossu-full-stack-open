@@ -38,22 +38,27 @@ app.route('/api/persons')
             .then(persons => response.json(persons))
             .catch(error => next(error))
     })
-    .post((request, response) => {
+    .post((request, response, next) => {
         const body = request.body;
 
         if (!body) return response.status(400).json({ error: 'content missing' });
         if (!body.name) return response.status(400).json({ error: 'name missing' });
         if (!body.number) return response.status(400).json({ error: 'number missing' });
 
-        // if (persons.some(person => person.name.toLocaleLowerCase() === body.name.toLocaleLowerCase()))
-        //     return response.status(400).json({ error: 'name must be unique' });
+        Person.exists({ 'name': new RegExp(`^${body.name}$`, 'i') })
+            .then(result => {
+                if (result) {
+                    return response.status(400).json({ error: 'name must be unique' })
+                } else {
+                    const newPerson = new Person({
+                        name: body.name,
+                        number: body.number
+                    })
 
-        const newPerson = new Person({
-            name: body.name,
-            number: body.number
-        })
-
-        newPerson.save().then(() => response.status(201).json(newPerson))
+                    return newPerson.save().then(() => response.status(201).json(newPerson))
+                }
+            })
+            .catch(error => next(error))
     })
 
 app.route('/api/persons/:id')
@@ -71,6 +76,21 @@ app.route('/api/persons/:id')
             .then(result => {
                 console.log(result);
                 return result ? response.status(204).end() : response.status(404).end()
+            })
+            .catch(error => next(error))
+    })
+    .put((request, response, next) => {
+        const id = request.params.id;
+        const body = request.body;
+
+        const person = {
+            name: body.name,
+            number: body.number
+        }
+
+        Person.findByIdAndUpdate(id, person, { new: true })
+            .then(updatedPerson => {
+                return updatedPerson ? response.send(updatedPerson) : response.status(404).end();
             })
             .catch(error => next(error))
     })
