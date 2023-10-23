@@ -55,15 +55,12 @@ app.route('/api/persons/:id')
         return person ? response.json(person) : response.status(404).send();
     })
     .delete((request, response) => {
-        const id = Number(request.params.id);
+        const id = request.params.id;
 
-        const person = persons.find(person => person.id === id);
-        if (person) {
-            persons = persons.filter(person => person.id !== id)
-            return response.status(204).end()
-        } else {
-            return response.status(404).end()
-        }
+        Person.findByIdAndRemove(id).then(result => {
+            console.log(result);
+            return result ? response.status(204).end() : response.status(404).end()
+        })
     })
 
 app.use(unknownEndpoint)
