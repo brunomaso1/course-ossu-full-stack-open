@@ -38,6 +38,7 @@ function App() {
         newName={newName} setNewName={setNewName}
         newNumber={newNumber} setNewNumber={setNewNumber}
         setNotification={setNotification}
+        setErrorMessage={setErrorMessage}
       ></PersonForm>
       <h3>Numbers</h3>
       <Persons
