@@ -25,11 +25,14 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-app.get('/info', (request, response) => {
-    let htmlResp = `<p>Phonebook has info for ${persons.length} people</p>`;
-    htmlResp += `<p>${Date().toLocaleString()}</p>`
-
-    return response.send(htmlResp);
+app.get('/info', (request, response, next) => {
+    Person.countDocuments({})
+        .then(result => {
+            let htmlResp = `<p>Phonebook has info for ${result} people</p>`;
+            htmlResp += `<p>${Date().toLocaleString()}</p>`
+            return response.send(htmlResp)
+        })
+        .catch(error => next(error))
 })
 
 app.route('/api/persons')
@@ -62,12 +65,14 @@ app.route('/api/persons')
     })
 
 app.route('/api/persons/:id')
-    .get((request, response) => {
-        const id = Number(request.params.id);
+    .get((request, response, next) => {
+        const id = request.params.id;
 
-        const person = persons.find(person => person.id === id)
-
-        return person ? response.json(person) : response.status(404).send();
+        Person.findById(id)
+            .then(result => {
+                return result ? response.json(result) : response.status(404).send();
+            })
+            .catch(error => next(error))
     })
     .delete((request, response, next) => {
         const id = request.params.id;
