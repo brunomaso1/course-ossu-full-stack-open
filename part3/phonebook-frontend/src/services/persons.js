@@ -1,9 +1,9 @@
-import axios from 'axios';
+import axios from 'axios'
 
-const baseUrl = '/api/persons';
+const baseUrl = '/api/persons'
 
-const getAll = () => axios.get(baseUrl).then(response => response.data);
-const create = newPerson => axios.post(baseUrl, newPerson).then(response => response.data);
+const getAll = () => axios.get(baseUrl).then(response => response.data)
+const create = newPerson => axios.post(baseUrl, newPerson).then(response => response.data)
 const eliminate = id => axios.delete(baseUrl + `/${id}`)
 const update = updatePerson => axios.put(baseUrl + `/${updatePerson.id}`, updatePerson)
 

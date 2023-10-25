@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 
 // Handle errors...
 function handleError(message) {
-    console.log(message);
-    process.exit(1);
+    console.log(message)
+    process.exit(1)
 }
 
 if (process.argv.length < 3) { handleError('password missing') }
@@ -36,11 +36,11 @@ if (name || number) {
         mongoose.connection.close()
     })
 } else {
-    console.log("phonebook:");
+    console.log('phonebook:')
     Person.find({}).then(response => {
         response.forEach(person => {
-            console.log(`${person.name} ${person.number}`);
-        });
-        mongoose.connection.close();
+            console.log(`${person.name} ${person.number}`)
+        })
+        mongoose.connection.close()
     })
 }

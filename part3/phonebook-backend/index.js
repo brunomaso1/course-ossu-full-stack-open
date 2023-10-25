@@ -8,7 +8,7 @@ const Person = require('./models/person')
 morgan.token('body', req => JSON.stringify(req.body))
 
 const errorHandler = (error, request, response, next) => {
-    console.log(error.message);
+    console.log(error.message)
 
     if (error.name === 'CastError')
         return response.status(400).json({ error: 'malformatted id' })
@@ -30,7 +30,7 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 app.get('/info', (request, response, next) => {
     Person.countDocuments({})
         .then(result => {
-            let htmlResp = `<p>Phonebook has info for ${result} people</p>`;
+            let htmlResp = `<p>Phonebook has info for ${result} people</p>`
             htmlResp += `<p>${Date().toLocaleString()}</p>`
             return response.send(htmlResp)
         })
@@ -44,11 +44,11 @@ app.route('/api/persons')
             .catch(error => next(error))
     })
     .post((request, response, next) => {
-        const body = request.body;
+        const body = request.body
 
-        if (!body) return response.status(400).json({ error: 'content missing' });
-        if (!body.name) return response.status(400).json({ error: 'name missing' });
-        if (!body.number) return response.status(400).json({ error: 'number missing' });
+        if (!body) return response.status(400).json({ error: 'content missing' })
+        if (!body.name) return response.status(400).json({ error: 'name missing' })
+        if (!body.number) return response.status(400).json({ error: 'number missing' })
 
         Person.exists({ 'name': new RegExp(`^${body.name}$`, 'i') })
             .then(result => {
@@ -68,27 +68,27 @@ app.route('/api/persons')
 
 app.route('/api/persons/:id')
     .get((request, response, next) => {
-        const id = request.params.id;
+        const id = request.params.id
 
         Person.findById(id)
             .then(result => {
-                return result ? response.json(result) : response.status(404).send();
+                return result ? response.json(result) : response.status(404).send()
             })
             .catch(error => next(error))
     })
     .delete((request, response, next) => {
-        const id = request.params.id;
+        const id = request.params.id
 
         Person.findByIdAndRemove(id)
             .then(result => {
-                console.log(result);
+                console.log(result)
                 return result ? response.status(204).end() : response.status(404).end()
             })
             .catch(error => next(error))
     })
     .put((request, response, next) => {
-        const id = request.params.id;
-        const body = request.body;
+        const id = request.params.id
+        const body = request.body
 
         const person = {
             name: body.name,
@@ -97,7 +97,7 @@ app.route('/api/persons/:id')
 
         Person.findByIdAndUpdate(id, person, { new: true, runValidators: true, context: 'query' })
             .then(updatedPerson => {
-                return updatedPerson ? response.send(updatedPerson) : response.status(404).end();
+                return updatedPerson ? response.send(updatedPerson) : response.status(404).end()
             })
             .catch(error => next(error))
     })
