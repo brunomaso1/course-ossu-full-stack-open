@@ -169,3 +169,35 @@ describe('test: favoriteBlog', () => {
     return expect(result).toEqual(expectedResult)
   })
 })
+
+describe('test: mostBlogs', () => {
+  test('of empty list is null', () => {
+    const blogs = blogsEmpty
+    const expectedResult = null
+
+    const result = listHelper.mostBlogs(blogs)
+    return expect(result).toEqual(expectedResult)
+  })
+
+  test('of one element is the element', () => {
+    const blogs = blogsUnique
+    const expectedResult = {
+      author: 'Edsger W. Dijkstra',
+      blogs: 1
+    }
+
+    const result = listHelper.mostBlogs(blogs)
+    return expect(result).toEqual(expectedResult)
+  })
+
+  test('of many authors with many elements', () => {
+    const blogs = blogsMany
+    const expectedResult = {
+      author: "Robert C. Martin",
+      blogs: 3
+    }
+
+    const result = listHelper.mostBlogs(blogs)
+    return expect(result).toEqual(expectedResult)
+  })
+})
