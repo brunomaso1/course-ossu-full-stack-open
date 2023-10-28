@@ -4,11 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "test": "jest --verbose",
-    "lint:fix": "eslint . --fix",
-    "lint": "eslint ."
+    "bloglist:start": "node index.js",
+    "bloglist:dev": "nodemon index.js",
+    "bloglist:build:ui": "rm -rf build && cd ../frontend/ && npm run build && cp -r build ../backend",
+    "bloglist:deploy": "fly deploy",
+    "bloglist:deploy:full": "npm run build:ui && npm run deploy",
+    "bloglist:logs:prod": "fly logs",
+    "bloglist:lint": "eslint .",
+    "bloglist:test": "jest --verbose"
   },
   "author": "",
   "license": "ISC",

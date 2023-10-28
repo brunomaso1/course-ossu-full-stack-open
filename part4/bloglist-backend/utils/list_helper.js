@@ -48,4 +48,42 @@ const mostBlogs = (blogs) =>
         blog => _.zipObject(['author', 'blogs'], blog) // convert to an object
     ])(blogs)
 
-module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs }
+const mostLikes = (blogs) => {
+    // First way, using the code on top.
+    /* const accumulatedBlogs = []
+    blogs.forEach((blog) => {
+        const accBlogIndex = accumulatedBlogs.findIndex((accBlog) => {
+            return accBlog.author.toLowerCase().trim() === blog.author.toLowerCase().trim()
+        })
+        if (accBlogIndex !== -1) {
+            accumulatedBlogs[accBlogIndex].likes += blog.likes
+        } else {
+            accumulatedBlogs.push({ author: blog.author, likes: blog.likes })
+        }
+    })
+    return !accumulatedBlogs?.length ? null : accumulatedBlogs.sort((a, b) => b.likes - a.likes)[0] */
+
+    // Second way, more siplified code. Descendant sorting and returing the first one. O(n^2).
+    // let authorLikes = blogs.reduce((prev, { author, likes }) => {
+    // Extended form of below code:
+    /* if (author in prev) // if property exists
+        prev[author] += likes // add likes
+    else
+        prev[author] = likes // create property and assign likes to it */
+    //     prev[author] = prev[author] || 0 // Keeps the same value or puts 0 if key is undeffined
+    //     prev[author] += likes
+    //     return prev
+    // }, {})
+    // return Object.keys(authorLikes).sort((a, b) => authorLikes[b] - authorLikes[a])[0]
+
+    // Third way, the most efective one and simplified code. O(n)
+    return !blogs?.length ? null : blogs.reduce(({ sums, most }, { likes, author }) => {
+        // Below code is the same as: likes = (sums[author] || 0) + likes
+        // And then: sums[author] = likes
+        sums[author] = likes = (sums[author] || 0) + likes
+        most = likes > most.likes ? { author, likes } : most
+        return { sums, most }
+    }, { sums: {}, most: { likes: 0 } }).most
+}
+
+module.exports = { dummy, totalLikes, favoriteBlog, mostBlogs, mostLikes }

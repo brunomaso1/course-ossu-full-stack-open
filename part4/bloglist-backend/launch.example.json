@@ -1,0 +1,18 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "bloglist:debbug-tests",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceRoot}\\course-ossu-full-stack-open\\part4\\bloglist-backend",
+      "runtimeArgs": [
+        "--inspect-brk",
+        "./node_modules/jest/bin/jest.js",
+        "--runInBand"
+      ],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
+    }
+  ]
+}
