@@ -16,7 +16,7 @@ beforeEach(async () => {
   }
 })
 
-describe('test: get all bloglist - /api/blogs', () => {
+describe('test: get /api/blogs', () => {
   test('return code 200 && Content-Type=aplication-json', async () => {
     await api.get('/api/blogs')
       .expect(200)
@@ -40,6 +40,47 @@ describe('test: get all bloglist - /api/blogs', () => {
     const { body: returnedBlogList } = await api.get('/api/blogs')
 
     return expect(returnedBlogList[0].id).toBeDefined()
+  })
+})
+
+describe('test: post /api/blogs', () => {
+  test('a valid blog can be added', async () => {
+    const newBlog = {
+      title: 'TitleTest',
+      author: 'AuthorTest',
+      url: 'urlTest',
+      likes: 10
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+  })
+
+  test('length of returned blogs is incresed by one', async () => {
+    const newBlog = {
+      title: 'TitleTest',
+      author: 'AuthorTest',
+      url: 'urlTest',
+      likes: 10
+    }
+
+    await api.post('/api/blogs').send(newBlog)
+    const { body: returnedBlogList } = await api.get('/api/blogs')
+
+    return expect(returnedBlogList).toHaveLength(initialBloglists.length + 1)
+  })
+
+  test('the blog is added to the DB', async () => {
+    const newBlog = {
+      title: 'TitleTest',
+      author: 'AuthorTest',
+      url: 'urlTest',
+      likes: 10
+    }
+
+    await api.post('/api/blogs').send(newBlog)
+    const { body: returnedBlogList } = await api.get('/api/blogs')
+
+    return expect(returnedBlogList).toContainEqual(expect.objectContaining(newBlog))
   })
 })
 
