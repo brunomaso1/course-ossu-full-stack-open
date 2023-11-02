@@ -8,11 +8,11 @@ const blogSchema = new mongoose.Schema({
 })
 
 blogSchema.set('toJSON', {
-    virtuals: true,
-    transform: (document, returnedObject) => {
-        delete returnedObject._id
-        delete returnedObject.__v
-    }
+  virtuals: true,
+  transform: (document, returnedObject) => {
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
 })
 
 module.exports = mongoose.model('Blog', blogSchema)
