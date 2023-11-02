@@ -9,19 +9,11 @@ const api = supertest(app)
 
 beforeEach(async () => {
   await Blog.deleteMany({})
-
-  for (const bloglist of initialBloglists) {
-    const blogObject = Blog(bloglist)
-    await blogObject.save()
-  }
+  await Blog.insertMany(initialBloglists)
 })
 
-describe('test: get /api/blogs', () => {
-  test('return code 200 && Content-Type=aplication-json', async () => {
-    await api.get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-  })
+describe('test: GET /api/blogs', () => {
+  test('return code 200 && Content-Type=aplication-json', async () => await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/))
 
   test('all blogs are rturned', async () => {
     const { body: returnedBlogList } = await api.get('/api/blogs')
@@ -43,7 +35,7 @@ describe('test: get /api/blogs', () => {
   })
 })
 
-describe('test: post /api/blogs', () => {
+describe('test: POST /api/blogs', () => {
   test('a valid blog can be added', async () => {
     const newBlog = {
       title: 'TitleTest',
@@ -52,10 +44,10 @@ describe('test: post /api/blogs', () => {
       likes: 10
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    return await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
   })
 
-  test('length of returned blogs is incresed by one', async () => {
+  test('length of returned blogs is incressed by one', async () => {
     const newBlog = {
       title: 'TitleTest',
       author: 'AuthorTest',
@@ -64,9 +56,9 @@ describe('test: post /api/blogs', () => {
     }
 
     await api.post('/api/blogs').send(newBlog)
-    const { body: returnedBlogList } = await api.get('/api/blogs')
+    const dbBloglist = await Blog.find({})
 
-    return expect(returnedBlogList).toHaveLength(initialBloglists.length + 1)
+    return expect(dbBloglist).toHaveLength(initialBloglists.length + 1)
   })
 
   test('the blog is added to the DB', async () => {
@@ -78,9 +70,9 @@ describe('test: post /api/blogs', () => {
     }
 
     await api.post('/api/blogs').send(newBlog)
-    const { body: returnedBlogList } = await api.get('/api/blogs')
+    const dbBloglist = await Blog.find({})
 
-    return expect(returnedBlogList).toContainEqual(expect.objectContaining(newBlog))
+    return expect(dbBloglist).toContainEqual(expect.objectContaining(newBlog))
   })
 
   test('verifies that likes property defaults to 0 if missing', async () => {
@@ -94,25 +86,56 @@ describe('test: post /api/blogs', () => {
     return expect(blogResult.likes).toBeDefined() && expect(blogResult.likes).toBe(0)
   })
 
-  test('property title missing', async() => {
+  test('property title missing', async () => {
     const newBlog = {
       author: 'AuthorTest',
       url: 'urlTest',
       likes: 10
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    return await api.post('/api/blogs').send(newBlog).expect(400)
   })
 
-  test('property url missing', async() => {
+  test('property url missing', async () => {
     const newBlog = {
       title: 'TitleTest',
       author: 'AuthorTest',
       likes: 10
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    return await api.post('/api/blogs').send(newBlog).expect(400)
   })
+})
+
+describe('test: DELETE /api/blogs/:id', () => {
+  test('returned code 204 when the blog exists', async () => {
+    const { id } = await Blog.findOne({})
+
+    return await api.delete(`/api/blogs/${id}`).expect(204)
+  })
+  test('returned code 404 when the blog does not exists', async () => {
+    const notOnBDId = '654404984f624faa1f100972'
+    return await api.delete(`/api/blogs/${notOnBDId}`).expect(404)
+  })
+  test('the blog is not more in the database', async () => {
+    const { id } = await Blog.findOne({})
+
+    await api.delete(`/api/blogs/${id}`).expect(204)
+    const dbBloglist = await Blog.find({})
+
+    return expect(dbBloglist).not.toContainEqual(expect.objectContaining({ id }))
+  })
+  test('the id is bad formated, returns 400', async () => {
+    const malFormedId = '654404984f624faa1f10097'
+    return await api.delete(`/api/blogs/${malFormedId}`).expect(400)
+  })
+})
+
+describe('test: PUT /api/blogs/:id', () => {
+  test.todo('returned code 200 when the blog exists')
+  test.todo('returned code 404 when the blog does not exists')
+  test.todo('the content is updated in the database')
+  test.todo('the id is bad formated')
 })
 
 afterAll(async () => {
