@@ -93,6 +93,26 @@ describe('test: post /api/blogs', () => {
     const { body: blogResult } = await api.post('/api/blogs').send(newBlog)
     return expect(blogResult.likes).toBeDefined() && expect(blogResult.likes).toBe(0)
   })
+
+  test('property title missing', async() => {
+    const newBlog = {
+      author: 'AuthorTest',
+      url: 'urlTest',
+      likes: 10
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(400)
+  })
+
+  test('property url missing', async() => {
+    const newBlog = {
+      title: 'TitleTest',
+      author: 'AuthorTest',
+      likes: 10
+    }
+
+    await api.post('/api/blogs').send(newBlog).expect(400)
+  })
 })
 
 afterAll(async () => {
