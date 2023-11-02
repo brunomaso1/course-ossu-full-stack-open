@@ -113,10 +113,12 @@ describe('test: DELETE /api/blogs/:id', () => {
 
     return await api.delete(`/api/blogs/${id}`).expect(204)
   })
+
   test('returned code 404 when the blog does not exists', async () => {
     const notOnBDId = '654404984f624faa1f100972'
     return await api.delete(`/api/blogs/${notOnBDId}`).expect(404)
   })
+
   test('the blog is not more in the database', async () => {
     const { id } = await Blog.findOne({})
 
@@ -125,6 +127,7 @@ describe('test: DELETE /api/blogs/:id', () => {
 
     return expect(dbBloglist).not.toContainEqual(expect.objectContaining({ id }))
   })
+
   test('the id is bad formated, returns 400', async () => {
     const malFormedId = '654404984f624faa1f10097'
     return await api.delete(`/api/blogs/${malFormedId}`).expect(400)
@@ -132,10 +135,47 @@ describe('test: DELETE /api/blogs/:id', () => {
 })
 
 describe('test: PUT /api/blogs/:id', () => {
-  test.todo('returned code 200 when the blog exists')
-  test.todo('returned code 404 when the blog does not exists')
-  test.todo('the content is updated in the database')
-  test.todo('the id is bad formated')
+  test('returned code 200 when the blog exists', async () => {
+    const blogToUpdate = {
+      title: 'UpdatedTitle',
+      author: 'UpdatedAuthor',
+      url: 'UpdatedURL',
+      likes: 0
+    }
+    const { id } = await Blog.findOne({})
+
+    return await api.put(`/api/blogs/${id}`).send(blogToUpdate).expect(200).expect('Content-Type', /application\/json/)
+  })
+
+  test('returned code 404 when the blog does not exists', async () => {
+    const blogToUpdate = {
+      title: 'UpdatedTitle',
+      author: 'UpdatedAuthor',
+      url: 'UpdatedURL',
+      likes: 0
+    }
+    const notOnBDId = '654404984f624faa1f100972'
+    return await api.put(`/api/blogs/${notOnBDId}`).send(blogToUpdate).expect(404)
+  })
+
+  test('the content is updated in the database', async () => {
+    const blogToUpdate = {
+      title: 'UpdatedTitle',
+      author: 'UpdatedAuthor',
+      url: 'UpdatedURL',
+      likes: 0
+    }
+    const { id } = await Blog.findOne({})
+
+    await api.put(`/api/blogs/${id}`).send(blogToUpdate)
+    const dbBlog = await Blog.findById(id)
+    return expect(dbBlog).toEqual(expect.objectContaining(blogToUpdate))
+  })
+
+  test('the id is bad formated', async () => {
+    const malFormedId = '654404984f624faa1f10097'
+    return await api.put(`/api/blogs/${malFormedId}`).expect(400)
+  })
 })
 
 afterAll(async () => {
