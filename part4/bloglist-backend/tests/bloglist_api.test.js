@@ -35,6 +35,12 @@ describe('test: get all bloglist - /api/blogs', () => {
 
     return expect(returnedBlogList).toContainEqual(expect.objectContaining(blogInInitalList))
   })
+
+  test('blogs returned has an id property', async () => {
+    const { body: returnedBlogList } = await api.get('/api/blogs')
+
+    return expect(returnedBlogList[0].id).toBeDefined()
+  })
 })
 
 afterAll(async () => {
