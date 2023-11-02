@@ -82,6 +82,17 @@ describe('test: post /api/blogs', () => {
 
     return expect(returnedBlogList).toContainEqual(expect.objectContaining(newBlog))
   })
+
+  test('verifies that likes property defaults to 0 if missing', async () => {
+    const newBlog = {
+      title: 'TitleTest',
+      author: 'AuthorTest',
+      url: 'urlTest'
+    }
+
+    const { body: blogResult } = await api.post('/api/blogs').send(newBlog)
+    return expect(blogResult.likes).toBeDefined() && expect(blogResult.likes).toBe(0)
+  })
 })
 
 afterAll(async () => {
