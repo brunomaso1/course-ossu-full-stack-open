@@ -1,15 +1,21 @@
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 
-const initialBloglists = require('./bloglist_api_test_data.json')
+const { blogs: initialBloglists, users: initialUsers } = require('./bloglist_api_test_data.json')
 const app = require('../app')
 const supertest = require('supertest')
 
 const api = supertest(app)
 
 beforeEach(async () => {
+  // Clean up database.
+  await User.deleteMany({})
   await Blog.deleteMany({})
+
+  // Insert data.
   await Blog.insertMany(initialBloglists)
+  await User.insertMany(initialUsers)
 })
 
 describe('test: GET /api/blogs', () => {
@@ -177,6 +183,62 @@ describe('test: PUT /api/blogs/:id', () => {
     return await api.put(`/api/blogs/${malFormedId}`).expect(400)
   })
 })
+
+describe('test: GET /api/users/', () => {
+  test('return code 200 && Content-Type=aplication-json', async () => await api.get('/api/users').expect(200).expect('Content-Type', /application\/json/))
+
+  test('all users are returned', async () => {
+    const { body: returnedUsers } = await api.get('/api/users')
+
+    return expect(returnedUsers).toHaveLength(initialUsers.length)
+  })
+
+  test('a specific user is returned', async () => {
+    const { body: returnedUsers } = await api.get('/api/users')
+    const user = initialUsers[0]
+
+    return expect(returnedUsers).toContainEqual(expect.objectContaining({ name: user.name }))
+  })
+})
+
+describe('test: POST /api/users', () => {
+  test('a valid user can be added', async () => {
+    const newUser = {
+      username: 'test2',
+      name: 'test2',
+      password: '$2a$10$p5WNpz9U3WKhHlZOUFlWb.P8Tdg4nza5PkuOwuemyYSkyFk4D3ht2'
+    }
+
+    return await api.post('/api/users').send(newUser).expect(201).expect('Content-Type', /application\/json/)
+  })
+
+  test('length of returned users is incressed by one', async () => {
+    const newUser = {
+      username: 'test2',
+      name: 'test2',
+      password: '$2a$10$p5WNpz9U3WKhHlZOUFlWb.P8Tdg4nza5PkuOwuemyYSkyFk4D3ht2'
+    }
+
+    await api.post('/api/users').send(newUser)
+    const dbUsers = await User.find({})
+
+    return expect(dbUsers).toHaveLength(initialUsers.length + 1)
+  })
+
+  test('the user is added to the DB', async () => {
+    const newUser = {
+      username: 'test2',
+      name: 'test2',
+      password: '$2a$10$p5WNpz9U3WKhHlZOUFlWb.P8Tdg4nza5PkuOwuemyYSkyFk4D3ht2'
+    }
+
+    await api.post('/api/users').send(newUser)
+    const dbUsers = await User.find({})
+
+    return expect(dbUsers).toContainEqual(expect.objectContaining(newUser))
+  })
+})
+
 
 afterAll(async () => {
   await mongoose.connection.close()
