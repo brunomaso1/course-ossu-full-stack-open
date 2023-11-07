@@ -35,12 +35,12 @@
     {
       "username": "test",
       "name": "test", 
-      "password": "$2a$10$8Xl5MqCZtmFU3PkdkLrixe3G9FP7ojQAGn1cyY9fkv1S8h30jjH8e"
+      "passwordHash": "$2a$10$8Xl5MqCZtmFU3PkdkLrixe3G9FP7ojQAGn1cyY9fkv1S8h30jjH8e"
     },
     {
       "username": "test1",
       "name": "test1", 
-      "password": "$2a$10$gFbjwshfG5U2nssfj85p4.y1FAPUbMJ6Lf705t56TtYVU8KOU2Pom"
+      "passwordHash": "$2a$10$gFbjwshfG5U2nssfj85p4.y1FAPUbMJ6Lf705t56TtYVU8KOU2Pom"
     }
   ]
 }

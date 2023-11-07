@@ -206,7 +206,7 @@ describe('test: POST /api/users', () => {
     const newUser = {
       username: 'test2',
       name: 'test2',
-      password: '$2a$10$p5WNpz9U3WKhHlZOUFlWb.P8Tdg4nza5PkuOwuemyYSkyFk4D3ht2'
+      password: 'test2'
     }
 
     return await api.post('/api/users').send(newUser).expect(201).expect('Content-Type', /application\/json/)
@@ -216,7 +216,7 @@ describe('test: POST /api/users', () => {
     const newUser = {
       username: 'test2',
       name: 'test2',
-      password: '$2a$10$p5WNpz9U3WKhHlZOUFlWb.P8Tdg4nza5PkuOwuemyYSkyFk4D3ht2'
+      password: 'test2'
     }
 
     await api.post('/api/users').send(newUser)
@@ -229,13 +229,62 @@ describe('test: POST /api/users', () => {
     const newUser = {
       username: 'test2',
       name: 'test2',
-      password: '$2a$10$p5WNpz9U3WKhHlZOUFlWb.P8Tdg4nza5PkuOwuemyYSkyFk4D3ht2'
+      password: 'test2'
     }
 
     await api.post('/api/users').send(newUser)
     const dbUsers = await User.find({})
 
-    return expect(dbUsers).toContainEqual(expect.objectContaining(newUser))
+    return expect(dbUsers).toContainEqual(expect.objectContaining({ username: newUser.username, name: newUser.name }))
+  })
+
+  test('Username check', async () => {
+    const newUser = {
+      name: 'test2',
+      password: 'test2'
+    }
+
+    let { body } = await api.post('/api/users').send(newUser).expect(400)
+    expect(body.error).toBeDefined()
+
+    newUser.username = 't'
+    body = await api.post('/api/users').send(newUser).expect(400)
+
+    return expect(body.error).toBeDefined()
+  })
+
+  test('Password check', async () => {
+    const newUser = {
+      username: 'test2',
+      name: 'test2',
+    }
+
+    let { body } = await api.post('/api/users').send(newUser).expect(400)
+    expect(body.error).toBeDefined()
+
+    newUser.password = 't'
+    body = await api.post('/api/users').send(newUser).expect(400)
+
+    return expect(body.error).toBeDefined()
+  })
+
+  test('user uniqueness', async () => {
+    const newUser1 = {
+      username: 'test2',
+      name: 'test2',
+      password: 'test2'
+    }
+
+    const newUser2 = {
+      username: 'test2',
+      name: 'othername',
+      password: 'otherpassword'
+    }
+
+    await api.post('/api/users').send(newUser1)
+    let { body } = await api.post('/api/users').send(newUser2).expect(400)
+
+    return expect(body.error).toBeDefined()
   })
 })
 
