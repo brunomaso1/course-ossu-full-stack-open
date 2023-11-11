@@ -14,8 +14,15 @@ beforeEach(async () => {
   await Blog.deleteMany({})
 
   // Insert data.
-  await Blog.insertMany(initialBloglists)
   await User.insertMany(initialUsers)
+  await Blog.insertMany(initialBloglists)
+
+  const user = await User.findOne({ username: 'test' })
+  const blog = await Blog.findOne({ title: 'Title1' })
+  user.blogs = user.blogs.concat(blog.id)
+  blog.user = user.id
+  user.save()
+  blog.save()
 })
 
 describe('test: GET /api/blogs', () => {
@@ -38,6 +45,16 @@ describe('test: GET /api/blogs', () => {
     const { body: returnedBlogList } = await api.get('/api/blogs')
 
     return expect(returnedBlogList[0].id).toBeDefined()
+  })
+
+  test('blog has user assigned', async () => {
+    const blog = await Blog.findOne({ title: 'Title1' })
+
+    const { body: returnedBlogList } = await api.get('/api/blogs')
+
+    const blogFilterd = returnedBlogList.filter((blg) => blg.title === blog.title)[0]
+
+    return expect(blogFilterd.user.username).toBe('test')
   })
 })
 
