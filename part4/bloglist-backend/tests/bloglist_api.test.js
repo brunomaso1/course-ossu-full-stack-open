@@ -10,12 +10,19 @@ const supertest = require('supertest')
 const api = supertest(app)
 
 async function insertUserBlogRelations() {
-  const user = await User.findOne({ username: 'test' })
-  const blog = await Blog.findOne({ title: 'Title1' })
-  user.blogs = user.blogs.concat(blog.id)
-  blog.user = user.id
-  user.save()
-  blog.save()
+  const user1 = await User.findOne({ username: 'test' })
+  const blog1 = await Blog.findOne({ title: 'Title1' })
+  user1.blogs = user1.blogs.concat(blog1.id)
+  blog1.user = user1.id
+  user1.save()
+  blog1.save()
+
+  const user2 = await User.findOne({ username: 'test1' })
+  const blog2 = await Blog.findOne({ title: 'Title2' })
+  user2.blogs = user2.blogs.concat(blog2.id)
+  blog2.user = user2.id
+  user2.save()
+  blog2.save()
 }
 
 async function getTokenUserTest() {
@@ -146,30 +153,48 @@ describe('test: POST /api/blogs', () => {
 })
 
 describe('test: DELETE /api/blogs/:id', () => {
-  test('returned code 204 when the blog exists', async () => {
-    const { id } = await Blog.findOne({})
+  describe('try delete with user loged in', () => {
+    test('returned code 204 when the blog exists', async () => {
+      const { id } = await Blog.findOne({ title: 'Title1' })
 
-    return await api.delete(`/api/blogs/${id}`).expect(204)
+      return await api.delete(`/api/blogs/${id}`).set('Authorization', `Bearer ${await getTokenUserTest()}`).expect(204)
+    })
+
+    test('returned code 404 when the blog does not exists', async () => {
+      const notOnBDId = '654404984f624faa1f100972'
+      return await api.delete(`/api/blogs/${notOnBDId}`).set('Authorization', `Bearer ${await getTokenUserTest()}`).expect(404)
+    })
+
+    test('the blog is not more in the database', async () => {
+      const { id } = await Blog.findOne({ title: 'Title1' })
+
+      await api.delete(`/api/blogs/${id}`).set('Authorization', `Bearer ${await getTokenUserTest()}`).expect(204)
+      const dbBloglist = await Blog.find({})
+
+      return expect(dbBloglist).not.toContainEqual(expect.objectContaining({ id }))
+    })
+
+    test('the id is bad formated, returns 400', async () => {
+      const malFormedId = '654404984f624faa1f10097'
+      return await api.delete(`/api/blogs/${malFormedId}`).set('Authorization', `Bearer ${await getTokenUserTest()}`).expect(400)
+    })
+
+    test('blog does not belog to user', async () => {
+      const { id } = await Blog.findOne({ title: 'Title2' })
+
+      const { body } = await api.delete(`/api/blogs/${id}`).set('Authorization', `Bearer ${await getTokenUserTest()}`).expect(400)
+      return expect(body.error).toBeDefined()
+    })
   })
 
-  test('returned code 404 when the blog does not exists', async () => {
-    const notOnBDId = '654404984f624faa1f100972'
-    return await api.delete(`/api/blogs/${notOnBDId}`).expect(404)
+  describe('try delete with invalid user', () => {
+    test('user not logued in', async () => {
+      const { id } = await Blog.findOne({ title: 'Title1' })
+
+      return await api.delete(`/api/blogs/${id}`).expect(401)
+    })
   })
 
-  test('the blog is not more in the database', async () => {
-    const { id } = await Blog.findOne({})
-
-    await api.delete(`/api/blogs/${id}`).expect(204)
-    const dbBloglist = await Blog.find({})
-
-    return expect(dbBloglist).not.toContainEqual(expect.objectContaining({ id }))
-  })
-
-  test('the id is bad formated, returns 400', async () => {
-    const malFormedId = '654404984f624faa1f10097'
-    return await api.delete(`/api/blogs/${malFormedId}`).expect(400)
-  })
 })
 
 describe('test: PUT /api/blogs/:id', () => {

@@ -6,12 +6,11 @@ const jwt = require('jsonwebtoken')
 blogsRouter.get('/', async (request, response) => response.json(await Blog.find({}).populate('user', { username: 1, name: 1 })))
 
 blogsRouter.post('/', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-  if (!decodedToken.id) return response.status(401).json({ error: 'invalid token' })
+  const { id: userId } = jwt.verify(request.token, process.env.SECRET)
+  if (!userId) return response.status(401).json({ error: 'invalid token' })
 
   const blog = new Blog(request.body)
-  const user = await User.findById(decodedToken.id)
+  const user = await User.findById(userId)
   blog.user = user.id
 
   const savedBlog = await blog.save()
@@ -21,7 +20,28 @@ blogsRouter.post('/', async (request, response) => {
   return response.status(201).json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => await Blog.findByIdAndDelete(request.params.id) ? response.status(204).end() : response.status(404).end())
+blogsRouter.delete('/:id', async (request, response) => {
+  const blogId = request.params.id
+  const { id: userId } = jwt.verify(request.token, process.env.SECRET)
+  if (!userId) return response.status(401).json({ error: 'invalid token' })
+
+  const blog = await Blog.findById(blogId)
+
+  if (!blog) return response.status(404).end()
+  if (blog?.user.toString() === userId.toString()) {
+    // Eliminate blog id from users blogs.
+    const user = await User.findById(userId)
+    const blogs = user.blogs.filter((blg) => {
+      return blg.id !== blog.id
+    })
+    await User.findByIdAndUpdate(user.id, { blogs }, { new: true, runValidators: true, context: 'query' })
+
+    await Blog.findByIdAndDelete(blogId)
+    return response.status(204).end()
+  } else {
+    return response.status(400).json({ error: 'blog does not belog to user' })
+  }
+})
 
 blogsRouter.put('/:id', async (request, response) => {
   const id = request.params.id
