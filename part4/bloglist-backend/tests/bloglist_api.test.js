@@ -1,12 +1,27 @@
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+const jwt = require('jsonwebtoken')
 
 const { blogs: initialBloglists, users: initialUsers } = require('./bloglist_api_test_data.json')
 const app = require('../app')
 const supertest = require('supertest')
 
 const api = supertest(app)
+
+async function insertUserBlogRelations() {
+  const user = await User.findOne({ username: 'test' })
+  const blog = await Blog.findOne({ title: 'Title1' })
+  user.blogs = user.blogs.concat(blog.id)
+  blog.user = user.id
+  user.save()
+  blog.save()
+}
+
+async function getTokenUserTest() {
+  const user = await User.findOne({ username: 'test' })
+  return jwt.sign({ username: 'test', id: user.id }, process.env.SECRET)
+}
 
 beforeEach(async () => {
   // Clean up database.
@@ -17,12 +32,7 @@ beforeEach(async () => {
   await User.insertMany(initialUsers)
   await Blog.insertMany(initialBloglists)
 
-  const user = await User.findOne({ username: 'test' })
-  const blog = await Blog.findOne({ title: 'Title1' })
-  user.blogs = user.blogs.concat(blog.id)
-  blog.user = user.id
-  user.save()
-  blog.save()
+  await insertUserBlogRelations()
 })
 
 describe('test: GET /api/blogs', () => {
@@ -67,7 +77,12 @@ describe('test: POST /api/blogs', () => {
       likes: 10
     }
 
-    return await api.post('/api/blogs').send(newBlog).expect(201).expect('Content-Type', /application\/json/)
+    return await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${await getTokenUserTest()}`)
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
   })
 
   test('length of returned blogs is incressed by one', async () => {
@@ -78,7 +93,7 @@ describe('test: POST /api/blogs', () => {
       likes: 10
     }
 
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs').set('Authorization', `Bearer ${await getTokenUserTest()}`).send(newBlog)
     const dbBloglist = await Blog.find({})
 
     return expect(dbBloglist).toHaveLength(initialBloglists.length + 1)
@@ -92,7 +107,7 @@ describe('test: POST /api/blogs', () => {
       likes: 10
     }
 
-    await api.post('/api/blogs').send(newBlog)
+    await api.post('/api/blogs').set('Authorization', `Bearer ${await getTokenUserTest()}`).send(newBlog)
     const dbBloglist = await Blog.find({})
 
     return expect(dbBloglist).toContainEqual(expect.objectContaining(newBlog))
@@ -105,7 +120,7 @@ describe('test: POST /api/blogs', () => {
       url: 'urlTest'
     }
 
-    const { body: blogResult } = await api.post('/api/blogs').send(newBlog)
+    const { body: blogResult } = await api.post('/api/blogs').set('Authorization', `Bearer ${await getTokenUserTest()}`).send(newBlog)
     return expect(blogResult.likes).toBeDefined() && expect(blogResult.likes).toBe(0)
   })
 
@@ -116,7 +131,7 @@ describe('test: POST /api/blogs', () => {
       likes: 10
     }
 
-    return await api.post('/api/blogs').send(newBlog).expect(400)
+    return await api.post('/api/blogs').set('Authorization', `Bearer ${await getTokenUserTest()}`).send(newBlog).expect(400)
   })
 
   test('property url missing', async () => {
@@ -126,7 +141,7 @@ describe('test: POST /api/blogs', () => {
       likes: 10
     }
 
-    return await api.post('/api/blogs').send(newBlog).expect(400)
+    return await api.post('/api/blogs').set('Authorization', `Bearer ${await getTokenUserTest()}`).send(newBlog).expect(400)
   })
 })
 
@@ -316,7 +331,8 @@ describe('test: POST /api/login', () => {
 
     return expect(body.token).toBeDefined()
   })
-  test('login incorrect', async() => {
+
+  test('login incorrect', async () => {
     const user = {
       username: 'test',
       password: 'wrrongPassword'
