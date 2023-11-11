@@ -305,6 +305,28 @@ describe('test: POST /api/users', () => {
   })
 })
 
+describe('test: POST /api/login', () => {
+  test('login correct', async () => {
+    const user = {
+      username: 'test',
+      password: 'test'
+    }
+
+    const { body } = await api.post('/api/login').send(user).expect(200)
+
+    return expect(body.token).toBeDefined()
+  })
+  test('login incorrect', async() => {
+    const user = {
+      username: 'test',
+      password: 'wrrongPassword'
+    }
+
+    const { body } = await api.post('/api/login').send(user).expect(401)
+
+    return expect(body.error).toBeDefined()
+  })
+})
 
 afterAll(async () => {
   await mongoose.connection.close()
