@@ -10,7 +10,7 @@ const LoginForm = ({ setUser }) => {
     try {
       const user = await loginService.login({ username, password })
 
-      localStorage.setItem('sessionToken', JSON.stringify(user.token))
+      localStorage.setItem('localStorageUser', JSON.stringify(user))
       setUser(user)
       setUsername('')
       setPassword('')
