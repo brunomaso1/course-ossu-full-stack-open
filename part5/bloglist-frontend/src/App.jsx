@@ -1,32 +1,44 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
-import blogService from './services/blogs'
 import LogOut from './components/Logout'
+import BlogForm from './components/BlogForm'
+
+import blogService from './services/blogs'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
+  const [mustUpdateBlogs, setMustUpdateBlogs] = useState(false)
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
+    const getBlogs = async () => {
+      const blogs = await blogService.getAll()
       setBlogs(blogs)
-    )
-  }, [])
+    }
+    getBlogs()
+  }, [mustUpdateBlogs])
 
   useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem('localStorageUser')))
+    const user = JSON.parse(localStorage.getItem('localStorageUser'))
+    setUser(user)
+    blogService.setToken(user?.token)
   }, [])
 
   if (!user) return <LoginForm setUser={setUser} />
 
   return (
     <div>
-      <h2>blogs</h2>
+      <h1>blogs</h1>
       <p>{user.name} logged in <LogOut setUser={setUser} /></p>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <h2>create new</h2>
+      <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} />
+      <div>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} />
+        )}
+      </div>
     </div>
   )
 }
