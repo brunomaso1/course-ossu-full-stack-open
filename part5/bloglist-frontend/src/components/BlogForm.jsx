@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogsService from "../services/blogs"
 
-const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs }) => {
+const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification }) => {
   const [blog, setBlog] = useState({ title: '', author: '', url: '' })
 
   const handleCreate = async (event) => {
@@ -11,6 +11,11 @@ const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs }) => {
       setBlog({ title: '', author: '', url: '' })
 
       setMustUpdateBlogs(!mustUpdateBlogs)
+
+      setNotification(`a new blog ${blog.title} by ${blog.author} added`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000);
     } catch (error) {
       console.log("Could not create the blog", error);
     }
