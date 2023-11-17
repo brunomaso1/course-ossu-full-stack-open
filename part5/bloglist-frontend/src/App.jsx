@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import LogOut from './components/Logout'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import ErrorMessage from './components/ErrorMessage'
+import ToggableButton from './components/ToggableButton'
 
 import blogService from './services/blogs'
 
@@ -44,8 +45,9 @@ const App = () => {
       <h1>blogs</h1>
       <Notification message={notification} setNotification={setNotification} />
       <p>{user.name} logged in <LogOut setUser={setUser} /></p>
-      <h2>create new</h2>
-      <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} setNotification={setNotification} />
+      <ToggableButton title="new note">
+        <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} setNotification={setNotification} />
+      </ToggableButton>
       <div>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />

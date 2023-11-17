@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogsService from "../services/blogs"
 
-const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification }) => {
+const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification, setShowToggableButton }) => {
   const [blog, setBlog] = useState({ title: '', author: '', url: '' })
 
   const handleCreate = async (event) => {
@@ -11,6 +11,7 @@ const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification }) => {
       setBlog({ title: '', author: '', url: '' })
 
       setMustUpdateBlogs(!mustUpdateBlogs)
+      setShowToggableButton(true)
 
       setNotification(`a new blog ${blog.title} by ${blog.author} added`)
       setTimeout(() => {
@@ -22,12 +23,15 @@ const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification }) => {
   }
 
   return (
-    <form onSubmit={handleCreate} >
-      <div>title: <input type="text" required value={blog.title} onChange={({ target }) => { setBlog({ ...blog, title: target.value }) }} /></div>
-      <div>author: <input type="text" required value={blog.author} onChange={({ target }) => { setBlog({ ...blog, author: target.value }) }} /></div>
-      <div>url: <input type="text" required value={blog.url} onChange={({ target }) => { setBlog({ ...blog, url: target.value }) }} /></div>
-      <button type="submit">create</button>
-    </form>
+    <>
+      <h2>create new</h2>
+      <form onSubmit={handleCreate} >
+        <div>title: <input type="text" required value={blog.title} onChange={({ target }) => { setBlog({ ...blog, title: target.value }) }} /></div>
+        <div>author: <input type="text" required value={blog.author} onChange={({ target }) => { setBlog({ ...blog, author: target.value }) }} /></div>
+        <div>url: <input type="text" required value={blog.url} onChange={({ target }) => { setBlog({ ...blog, url: target.value }) }} /></div>
+        <button type="submit">create</button>
+      </form>
+    </>
   )
 }
 
