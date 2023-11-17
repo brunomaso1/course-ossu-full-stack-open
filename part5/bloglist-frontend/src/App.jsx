@@ -45,7 +45,7 @@ const App = () => {
       <h1>blogs</h1>
       <Notification message={notification} setNotification={setNotification} />
       <p>{user.name} logged in <LogOut setUser={setUser} /></p>
-      <ToggableButton title="new note">
+      <ToggableButton title="create new blog">
         <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} setNotification={setNotification} />
       </ToggableButton>
       <div>
