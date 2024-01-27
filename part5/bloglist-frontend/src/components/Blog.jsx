@@ -15,7 +15,7 @@ const Blog = ({ blog }) => {
     return (
       <>
         <p>{blog.url}</p>
-        <p>{blog.likes}</p>
+        <p>likes {blog.likes} <button>like</button></p>
         <p>{blog.author}</p>
       </>
     )
