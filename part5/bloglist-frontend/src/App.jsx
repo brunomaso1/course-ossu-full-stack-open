@@ -18,6 +18,8 @@ const App = () => {
   const [notification, setNotification] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
 
+  const toggableButtonRef = useRef()
+
   useEffect(() => {
     const getBlogs = async () => {
       const blogs = await blogService.getAll()
@@ -32,6 +34,7 @@ const App = () => {
     blogService.setToken(user?.token)
   }, [])
 
+
   if (!user) return (
     <div>
       <h1>log in to application</h1>
@@ -45,8 +48,9 @@ const App = () => {
       <h1>blogs</h1>
       <Notification message={notification} setNotification={setNotification} />
       <p>{user.name} logged in <LogOut setUser={setUser} /></p>
-      <ToggableButton title="create new blog">
-        <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} setNotification={setNotification} />
+      <ToggableButton title="create new blog" ref={toggableButtonRef}>
+        <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} setNotification={setNotification} 
+          toggableButtonRef={toggableButtonRef}/>
       </ToggableButton>
       <div>
         {blogs.map(blog =>

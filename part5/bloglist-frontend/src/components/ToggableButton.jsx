@@ -1,16 +1,22 @@
-import { cloneElement, useImperativeHandle, useState } from "react"
+import { forwardRef, useImperativeHandle, useState } from "react"
 
-const ToggableButton = ({ title, children }) => {
+const ToggableButton = forwardRef((props, ref) => {
   const [showToggableButton, setShowToggableButton] = useState(true)
 
-  if (showToggableButton) return (<button onClick={() => { setShowToggableButton(false) }}>{title}</button>)
+  useImperativeHandle(ref, () => {
+    return {
+      setShowToggableButton
+    }
+  })
+
+  if (showToggableButton) return (<button onClick={() => { setShowToggableButton(false) }}>{props.title}</button>)
 
   return (
     <>
-      {cloneElement(children, { setShowToggableButton })}
+      {props.children}
       <button onClick={() => { setShowToggableButton(true) }}>cancel</button>
     </>
   )
-}
+})
 
 export default ToggableButton

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogsService from "../services/blogs"
 
-const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification, setShowToggableButton }) => {
+const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification, toggableButtonRef }) => {
   const [blog, setBlog] = useState({ title: '', author: '', url: '' })
 
   const handleCreate = async (event) => {
@@ -11,7 +11,8 @@ const BlogForm = ({ setMustUpdateBlogs, mustUpdateBlogs, setNotification, setSho
       setBlog({ title: '', author: '', url: '' })
 
       setMustUpdateBlogs(!mustUpdateBlogs)
-      setShowToggableButton(true)
+      // Hide this component.
+      toggableButtonRef.current.setShowToggableButton(true)
 
       setNotification(`a new blog ${blog.title} by ${blog.author} added`)
       setTimeout(() => {
