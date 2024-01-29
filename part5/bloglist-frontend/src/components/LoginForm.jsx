@@ -11,6 +11,8 @@ const LoginForm = ({ setUser, setErrorMessage }) => {
     try {
       const user = await loginService.login({ username, password })
 
+      console.log(user);
+
       localStorage.setItem('localStorageUser', JSON.stringify(user))
       blogsService.setToken(user.token)
       setUser(user)

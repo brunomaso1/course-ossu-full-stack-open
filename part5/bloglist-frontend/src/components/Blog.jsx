@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogsService from "../services/blogs"
 
-const Blog = ({ blog, setMustUpdateBlogs }) => {
+const Blog = ({ blog, setMustUpdateBlogs, user }) => {
   const [showButton, setShowButton] = useState('view')
   const [likes, setLikes] = useState(blog.likes)
 
@@ -25,12 +25,26 @@ const Blog = ({ blog, setMustUpdateBlogs }) => {
     }
   }
 
+  const handleRemoveButton = async (event) => {
+    event.preventDefault()
+    if (confirm(`Delete ${blog.title} by ${blog.author}?`)) {
+      try {
+        await blogsService.remove(blog)
+
+        setMustUpdateBlogs(true)
+      } catch (error) {
+        console.log("Could not delete blog", error);
+      }
+    }
+  }
+
   const blogDescription = () => {
     return (
       <>
         <p>{blog.url}</p>
         <p>likes {likes} <button onClick={handleLikeButton}>like</button></p>
         <p>{blog.user.name}</p>
+        {user.id === blog.user.id && <p><button onClick={handleRemoveButton}>remove</button></p>}
       </>
     )
   }
