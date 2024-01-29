@@ -26,6 +26,7 @@ const App = () => {
       setBlogs(blogs)
     }
     getBlogs()
+    setMustUpdateBlogs(false)
   }, [mustUpdateBlogs])
 
   useEffect(() => {
@@ -49,7 +50,7 @@ const App = () => {
       <Notification message={notification} setNotification={setNotification} />
       <p>{user.name} logged in <LogOut setUser={setUser} /></p>
       <ToggableButton title="create new blog" ref={toggableButtonRef}>
-        <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} mustUpdateBlogs={mustUpdateBlogs} setNotification={setNotification}
+        <BlogForm setMustUpdateBlogs={setMustUpdateBlogs} setNotification={setNotification}
           toggableButtonRef={toggableButtonRef} />
       </ToggableButton>
       <div>

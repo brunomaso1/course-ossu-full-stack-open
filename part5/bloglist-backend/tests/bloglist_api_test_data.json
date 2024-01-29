@@ -1,0 +1,46 @@
+{
+  "blogs": [
+    {
+      "title": "Title1",
+      "author": "Author1",
+      "url": "url1",
+      "likes": 1
+    },
+    {
+      "title": "Title2",
+      "author": "Author2",
+      "url": "url2",
+      "likes": 2
+    },
+    {
+      "title": "Title3",
+      "author": "Author3",
+      "url": "url3",
+      "likes": 3
+    },
+    {
+      "title": "Title4",
+      "author": "Author4",
+      "url": "url4",
+      "likes": 4
+    },
+    {
+      "title": "Title5",
+      "author": "Author5",
+      "url": "url5",
+      "likes": 5
+    }
+  ],
+  "users": [
+    {
+      "username": "test",
+      "name": "test", 
+      "passwordHash": "$2a$10$8Xl5MqCZtmFU3PkdkLrixe3G9FP7ojQAGn1cyY9fkv1S8h30jjH8e"
+    },
+    {
+      "username": "test1",
+      "name": "test1", 
+      "passwordHash": "$2a$10$gFbjwshfG5U2nssfj85p4.y1FAPUbMJ6Lf705t56TtYVU8KOU2Pom"
+    }
+  ]
+}
