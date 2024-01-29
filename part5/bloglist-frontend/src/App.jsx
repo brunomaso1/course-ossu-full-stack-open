@@ -21,20 +21,20 @@ const App = () => {
   const toggableButtonRef = useRef()
 
   useEffect(() => {
-    const getBlogs = async () => {
-      const blogs = await blogService.getAll()
-      setBlogs(blogs)
-    }
-    getBlogs()
-    setMustUpdateBlogs(false)
-  }, [mustUpdateBlogs])
-
-  useEffect(() => {
     const user = JSON.parse(localStorage.getItem('localStorageUser'))
     setUser(user)
     blogService.setToken(user?.token)
   }, [])
 
+  useEffect(() => {
+    const getBlogs = async () => {
+      const blogs = await blogService.getAll()
+      const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
+      setBlogs(sortedBlogs)
+    }
+    getBlogs()
+    setMustUpdateBlogs(false)
+  }, [mustUpdateBlogs])
 
   if (!user) return (
     <div>
