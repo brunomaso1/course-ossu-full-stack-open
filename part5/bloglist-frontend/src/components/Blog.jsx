@@ -1,5 +1,5 @@
-import { useState } from "react"
-import blogsService from "../services/blogs"
+import { useState } from 'react'
+import blogsService from '../services/blogs'
 
 const Blog = ({ blog, setMustUpdateBlogs, user }) => {
   const [showButton, setShowButton] = useState('view')
@@ -21,7 +21,7 @@ const Blog = ({ blog, setMustUpdateBlogs, user }) => {
 
       setLikes(blog.likes)
     } catch (error) {
-      console.log("Could not update blog", error);
+      console.log('Could not update blog', error)
     }
   }
 
@@ -33,7 +33,7 @@ const Blog = ({ blog, setMustUpdateBlogs, user }) => {
 
         setMustUpdateBlogs(true)
       } catch (error) {
-        console.log("Could not delete blog", error);
+        console.log('Could not delete blog', error)
       }
     }
   }

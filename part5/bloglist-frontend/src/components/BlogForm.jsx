@@ -1,5 +1,5 @@
-import { useState } from "react"
-import blogsService from "../services/blogs"
+import { useState } from 'react'
+import blogsService from '../services/blogs'
 
 const BlogForm = ({ setMustUpdateBlogs, setNotification, toggableButtonRef }) => {
   const [blog, setBlog] = useState({ title: '', author: '', url: '' })
@@ -17,9 +17,9 @@ const BlogForm = ({ setMustUpdateBlogs, setNotification, toggableButtonRef }) =>
       setNotification(`a new blog ${blog.title} by ${blog.author} added`)
       setTimeout(() => {
         setNotification(null)
-      }, 5000);
+      }, 5000)
     } catch (error) {
-      console.log("Could not create the blog", error);
+      console.log('Could not create the blog', error)
     }
   }
 
