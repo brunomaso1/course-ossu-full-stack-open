@@ -5,7 +5,7 @@ import Blog from './Blog'
 
 const blog = {
   title: 'title1',
-  author: 'author1 url1',
+  author: 'author1',
   url: 'url1',
   likes: 0,
   user: {
@@ -21,26 +21,35 @@ describe('<Blog /> ', () => {
     // To debug the DOM:
     // screen.debug()
 
-    screen.getByText('title1', { exact: false }) && screen.getByText('author1', { exact: false })
+    expect(screen.queryByText('title1', { exact: false })).toBeDefined()
+    expect(screen.queryByText('author1', { exact: false })).toBeDefined()
   })
 
   test('Does not render the URL or number of likes by default', () => {
     render(<Blog blog={blog} setMustUpdateBlogs={null} user='test1' />)
 
-    !screen.queryByText('url1', { exact: false }) && !screen.queryByText('likes', { exact: false })
+    expect(screen.queryByText('url1', { exact: false })).toBeNull()
+    expect(screen.queryByText('likes', { exact: false })).toBeNull()
   })
 
   test('The button view is showed by default', () => {
     render(<Blog blog={blog} setMustUpdateBlogs={null} user='test1' />)
 
-    screen.getByRole('button', { name: 'view' })
+    expect(screen.getByRole('button', { name: 'view' })).toBeDefined()
   })
 
-  test.skip('Shown URL and number of likes when show button is clicked', async () => {
+  test('Shown URL and number of likes when show button is clicked', async () => {
     render(<Blog blog={blog} setMustUpdateBlogs={null} user='test1' />)
+
+    expect(screen.queryByText('url1', { exact: false })).toBeNull()
+    expect(screen.queryByText('likes', { exact: false })).toBeNull()
+
     const user = userEvent.setup()
 
     const button = screen.queryByRole('button', { name: 'view' })
     await user.click(button)
+
+    expect(screen.queryByText('url1', { exact: false })).toBeDefined()
+    expect(screen.queryByText('likes', { exact: false })).toBeDefined()
   })
 })
