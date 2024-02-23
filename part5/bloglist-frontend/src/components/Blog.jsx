@@ -39,12 +39,14 @@ const Blog = ({ blog, setMustUpdateBlogs, user }) => {
   }
 
   const blogDescription = () => {
-    <>
-      <p>{blog.url}</p>
-      <p>likes {likes} <button onClick={handleLikeButton}>like</button></p>
-      <p>{blog.user.name}</p>
-      {user.id === blog.user.id && <p><button onClick={handleRemoveButton}>remove</button></p>}
-    </>
+    return (
+      <>
+        <p>{blog.url}</p>
+        <p>likes {likes} <button onClick={handleLikeButton}>like</button></p>
+        <p>{blog.user.name}</p>
+        {user.id === blog.user.id && <p><button onClick={handleRemoveButton}>remove</button></p>}
+      </>
+    )
   }
 
   return (
