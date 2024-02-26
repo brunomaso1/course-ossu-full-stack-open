@@ -27,9 +27,9 @@ const BlogForm = ({ setMustUpdateBlogs, setNotification, toggableButtonRef }) =>
     <>
       <h2>create new</h2>
       <form onSubmit={handleCreate} >
-        <div>title: <input type="text" required value={blog.title} onChange={({ target }) => { setBlog({ ...blog, title: target.value }) }} /></div>
-        <div>author: <input type="text" required value={blog.author} onChange={({ target }) => { setBlog({ ...blog, author: target.value }) }} /></div>
-        <div>url: <input type="text" required value={blog.url} onChange={({ target }) => { setBlog({ ...blog, url: target.value }) }} /></div>
+        <label htmlFor='title'>Title:</label><input type="text" id='title' required value={blog.title} onChange={({ target }) => { setBlog({ ...blog, title: target.value }) }} /><br />
+        <label htmlFor='author'>Author:</label><input type="text" id='author' required value={blog.author} onChange={({ target }) => { setBlog({ ...blog, author: target.value }) }} /><br />
+        <label htmlFor='url'>URL:</label> <input type="text" id='url' required value={blog.url} onChange={({ target }) => { setBlog({ ...blog, url: target.value }) }} /><br />
         <button type="submit">create</button>
       </form>
     </>

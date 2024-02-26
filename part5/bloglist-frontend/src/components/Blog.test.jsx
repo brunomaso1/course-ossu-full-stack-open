@@ -61,12 +61,14 @@ describe('<Blog /> ', () => {
   })
 
   test('Ensures that if the like button is clicked twice, the event handler the component received as props is called twice', async () => {
-    render(<Blog blog={blog} setMustUpdateBlogs={null} user='test1' />)
+    const setMustUpdateBlogs = jest.fn()
 
-    const spy = jest.spyOn(blogsService, 'updateLikes')
-    spy.mockReturnValue({ ...blog, likes: blog.likes + 1 })
+    const updateLikes = jest.spyOn(blogsService, 'updateLikes')
+    updateLikes.mockReturnValue({ ...blog, likes: blog.likes + 1 })
 
     const user = userEvent.setup()
+
+    render(<Blog blog={blog} setMustUpdateBlogs={setMustUpdateBlogs} user='test1' />)
 
     const viewButton = screen.queryByRole('button', { name: 'view' })
     await user.click(viewButton)
@@ -75,7 +77,8 @@ describe('<Blog /> ', () => {
     await user.click(likeButton)
     await user.click(likeButton)
 
-    expect(spy).toHaveBeenCalledTimes(2)
+    expect(setMustUpdateBlogs).not.toHaveBeenCalled()
+    expect(updateLikes).toHaveBeenCalledTimes(2)
     expect(screen.queryByText('likes 2', { exact: false })).not.toBeNull()
   })
 })
